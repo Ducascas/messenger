@@ -1,16 +1,16 @@
 # messenger
 
-A new Flutter project.
+Приложение мессенджер
 
-## Getting Started
+## Описание
 
-This project is a starting point for a Flutter application.
+Приложения для обмена сообщениями между пользователями. 
+Описание экранов:
+1. Экран для ввода данных пользователя.
+2. Экран со списком чатов.
+3. Экран передачи\получения сообщений.
 
-A few resources to get you started if this is your first Flutter project:
+## Особенности
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Приложение использует BLoC для управления состоянием приложения.
+- Для хранения данных используется сервис Firebase.
