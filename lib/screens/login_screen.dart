@@ -5,8 +5,19 @@ import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
+  void dispose() {
+    context.read<LoginCubit>().dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +34,19 @@ class LoginScreen extends StatelessWidget {
               TextFieldCustom(
                 controller: loginCubit.nameController,
                 labelText: AppText.name,
+                obscureText: false,
               ),
               const SizedBox(height: 20),
               TextFieldCustom(
                 controller: loginCubit.surNameController,
                 labelText: AppText.surname,
+                obscureText: false,
+              ),
+              const SizedBox(height: 20),
+              TextFieldCustom(
+                controller: loginCubit.passwordController,
+                labelText: AppText.password,
+                obscureText: true,
               ),
               const SizedBox(height: 20),
               ElevatedButton(
@@ -37,7 +56,7 @@ class LoginScreen extends StatelessWidget {
                     _navigateToHome(context);
                   }
                 },
-                child: const Text(AppText.chat),
+                child: const Text(AppText.input),
               ),
             ],
           ),

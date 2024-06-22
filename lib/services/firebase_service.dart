@@ -9,6 +9,7 @@ class FirebaseService {
     await docRef.set({
       'name': user.name,
       'surName': user.surname,
+      'password': user.password,
     });
   }
 
@@ -21,13 +22,18 @@ class FirebaseService {
         id: id,
         name: data['name'] as String,
         surname: data['surName'] as String,
+        password: data['password'] as String,
       );
     }
     return null;
   }
 
   static Stream<List<User>> getUsers() {
-    final ref = _firestore.collection('users').orderBy('name');
+    final ref = _firestore
+        .collection('users')
+        // .where('name', isNotEqualTo: currentUser.name)
+        .orderBy('name')
+    ;
     return ref.snapshots().map((snapshot) {
       final users = snapshot.docs.map((doc) {
         final data = doc.data(); // as Map<String, dynamic>;
@@ -35,6 +41,7 @@ class FirebaseService {
           id: doc.id,
           name: data['name'] as String,
           surname: data['surName'] as String,
+          password: data['password'] as String,
         );
       }).toList();
       return users;

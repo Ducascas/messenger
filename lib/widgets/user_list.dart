@@ -1,14 +1,17 @@
 import 'package:chat_app/models/models.dart';
 import 'package:chat_app/screens/screens.dart';
-import 'package:chat_app/services/firebase_service.dart';
+import 'package:chat_app/services/services.dart';
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class UserList extends StatelessWidget {
   const UserList({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = context.read<LoginCubit>().state.user;
+
     return StreamBuilder<List<User>>(
       stream: FirebaseService.getUsers(),
       builder: (context, snapshot) {
@@ -19,11 +22,14 @@ class UserList extends StatelessWidget {
             itemCount: users.length,
             separatorBuilder: (context, _) => const DividerCustom(),
             itemBuilder: (context, index) {
-              final user = users[index];
-              return UserTile(
-                user: user,
-                onTap: () => _navigateToChat(context, user),
-              );
+              final receiverUser = users[index];
+              // if (receiverUser.id != currentUser.id) {
+                return UserTile(
+                  user: receiverUser,
+                  onTap: () => _navigateToChat(context, receiverUser),
+                );
+              // }
+              // return const SizedBox.shrink();
             },
           );
         } else if (snapshot.hasError) {
@@ -39,10 +45,10 @@ class UserList extends StatelessWidget {
     );
   }
 
-  _navigateToChat(BuildContext context, User user) {
+  _navigateToChat(BuildContext context, User receiverUser) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => ChatScreen(user: user),
+        builder: (context) => ChatScreen(receiverUser: receiverUser),
       ),
     );
   }

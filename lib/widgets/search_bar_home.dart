@@ -29,6 +29,7 @@ class SearchBarHome extends StatelessWidget {
           TextFieldCustom(
             labelText: AppText.search,
             prefixIcon: Icon(Icons.search),
+            obscureText: false,
           ),
         ],
       ),

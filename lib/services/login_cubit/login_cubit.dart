@@ -1,7 +1,5 @@
 import 'package:chat_app/models/user.dart';
 import 'package:chat_app/services/services.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
 
@@ -15,35 +13,44 @@ class LoginCubit extends Cubit<LoginState> {
               id: '',
               name: '',
               surname: '',
+              password: '',
             ),
           ),
         );
 
-  // final _firestore = FirebaseFirestore.instance;
-
   final formKey = GlobalKey<FormState>();
-  TextEditingController nameController = TextEditingController();
-  TextEditingController surNameController = TextEditingController();
+  final nameController = TextEditingController();
+  final surNameController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  void dispose() {
+    nameController.dispose();
+    surNameController.dispose();
+    passwordController.dispose();
+  }
 
   bool isFormValid() => formKey.currentState!.validate();
 
-  void login() {
+  void login() async {
+    final name = nameController.text.trim();
+    final surName = surNameController.text.trim();
+    final password = passwordController.text.trim();
+
     if (isFormValid()) {
-      final user = state.user.copyWith(
-          id: DateTime.now().toString(),
-          name: nameController.text,
-          surname: surNameController.text);
+      final user = await FirebaseService.getUser(name + surName + password);
+      if (user != null && user.password == password) {
+        emit(state.copyWith(user: user));
+      } else {
+        final newUser = state.user.copyWith(
+            id: name + surName + password,
+            name: name,
+            surname: surName,
+            password: password);
 
-      // _firestore.collection("users").doc(user.id).set(
-      //   {
-      //     'name': user.name,
-      //     'surName': user.surname,
-      //   },
-      // );
+        FirebaseService.saveUser(newUser);
 
-      FirebaseService.saveUser(user);
-
-      emit(state.copyWith(user: user));
+        emit(state.copyWith(user: newUser));
+      }
     }
   }
 }
