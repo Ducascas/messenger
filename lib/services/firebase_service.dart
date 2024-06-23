@@ -29,14 +29,10 @@ class FirebaseService {
   }
 
   static Stream<List<User>> getUsers() {
-    final ref = _firestore
-        .collection('users')
-        // .where('name', isNotEqualTo: currentUser.name)
-        .orderBy('name')
-    ;
+    final ref = _firestore.collection('users').orderBy('name');
     return ref.snapshots().map((snapshot) {
       final users = snapshot.docs.map((doc) {
-        final data = doc.data(); // as Map<String, dynamic>;
+        final data = doc.data();
         return User(
           id: doc.id,
           name: data['name'] as String,
@@ -51,7 +47,9 @@ class FirebaseService {
   static Future<void> saveMessage(Message message) async {
     final docRef = _firestore
         .collection('chats')
-        .doc(message.senderId)
+        .doc(
+          message.senderId + message.receiverId,
+        )
         .collection('messages')
         .doc(message.timestamp.toString());
     await docRef.set({
@@ -64,17 +62,17 @@ class FirebaseService {
   static Stream<List<Message>> getMessages(String senderId, String receiverId) {
     final ref = _firestore
         .collection('chats')
-        .doc(senderId)
+        .doc(senderId + receiverId)
         .collection('messages')
         .orderBy('timestamp', descending: true);
     return ref.snapshots().map((snapshot) {
       final messages = snapshot.docs.map((doc) {
-        final data = doc.data(); // as Map<String, dynamic>;
+        final data = doc.data();
         return Message(
           senderId: data['receiverId'] as String,
           receiverId: senderId,
           content: data['content'] as String,
-          timestamp: data['timestamp'] as DateTime,
+          timestamp: data['timestamp'] as Timestamp,
         );
       }).toList();
       return messages;
