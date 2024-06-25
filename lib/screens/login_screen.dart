@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   @override
   void dispose() {
     context.read<LoginCubit>().dispose();
@@ -34,19 +35,26 @@ class _LoginScreenState extends State<LoginScreen> {
               TextFieldCustom(
                 controller: loginCubit.nameController,
                 labelText: AppText.name,
-                obscureText: false,
+                validator: (value) => value == null || value.isEmpty
+                    ? AppText.nameTextFieldError
+                    : null,
               ),
               const SizedBox(height: 20),
               TextFieldCustom(
                 controller: loginCubit.surNameController,
                 labelText: AppText.surname,
-                obscureText: false,
+                validator: (value) => value == null || value.isEmpty
+                    ? AppText.surnameTextFieldError
+                    : null,
               ),
               const SizedBox(height: 20),
               TextFieldCustom(
                 controller: loginCubit.passwordController,
                 labelText: AppText.password,
                 obscureText: true,
+                validator: (value) => value == null || value.isEmpty
+                    ? AppText.passTextFieldError
+                    : null,
               ),
               const SizedBox(height: 20),
               ElevatedButton(

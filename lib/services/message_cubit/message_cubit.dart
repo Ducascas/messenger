@@ -37,7 +37,7 @@ class MessageCubit extends Cubit<MessageState> {
         timestamp: Timestamp.now(),
       );
 
-      FirebaseService.saveMessage(message);
+      await FirebaseService.saveMessage(message);
 
       messageController.clear();
 

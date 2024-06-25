@@ -6,3 +6,4 @@ export 'icon_initials.dart';
 export 'user_list.dart';
 export 'chat_list.dart';
 export 'message_send_bar.dart';
+export 'message_tile.dart';

@@ -1,3 +1,4 @@
+import 'package:chat_app/core/constant/constant.dart';
 import 'package:chat_app/core/core.dart';
 import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +20,7 @@ class SearchBarHome extends StatelessWidget {
         children: [
           Text(
             AppText.chat,
-            style: TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.w400,
-              color: AppColors.blackBlue,
-            ),
+            style: AppTextStyle.textBigBlackBlue,
           ),
           SizedBox(height: 6),
           TextFieldCustom(

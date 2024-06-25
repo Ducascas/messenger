@@ -14,6 +14,7 @@ class LoginCubit extends Cubit<LoginState> {
               name: '',
               surname: '',
               password: '',
+              status: false,
             ),
           ),
         );
@@ -32,6 +33,8 @@ class LoginCubit extends Cubit<LoginState> {
   bool isFormValid() => formKey.currentState!.validate();
 
   void login() async {
+
+
     final name = nameController.text.trim();
     final surName = surNameController.text.trim();
     final password = passwordController.text.trim();
@@ -39,18 +42,34 @@ class LoginCubit extends Cubit<LoginState> {
     if (isFormValid()) {
       final user = await FirebaseService.getUser(name + surName + password);
       if (user != null && user.password == password) {
-        emit(state.copyWith(user: user));
+        await FirebaseService.updateStatus(user, true);
+        emit(
+          state.copyWith(user: user),
+        );
       } else {
         final newUser = state.user.copyWith(
             id: name + surName + password,
             name: name,
             surname: surName,
-            password: password);
+            password: password,
+            status: false);
 
-        FirebaseService.saveUser(newUser);
+        await FirebaseService.saveUser(newUser);
+        await FirebaseService.updateStatus(newUser, true);
 
-        emit(state.copyWith(user: newUser));
+
+        emit(
+          state.copyWith(user: newUser),
+        );
       }
     }
+  }
+
+  // void logOut() async {
+  //   FirebaseService.updateStatus(newUser, true);
+  // }
+
+  void isOnline(User user, bool status) async {
+    await FirebaseService.updateStatus(user, status);
   }
 }

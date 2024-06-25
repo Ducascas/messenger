@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:chat_app/core/constant/colors.dart';
 import 'package:flutter/material.dart';
 
 class IconInitials extends StatelessWidget {
@@ -24,7 +25,12 @@ class IconInitials extends StatelessWidget {
       ),
       child: Center(
         child: Text(
-          name.substring(0, 1) + surName.substring(0, 1),
+          name.substring(0, 1).toUpperCase() +
+              surName.substring(0, 1).toUpperCase(),
+          style: const TextStyle(
+            color: AppColors.white,
+            fontSize: 20,
+          ),
         ),
       ),
     );

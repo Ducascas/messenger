@@ -10,6 +10,14 @@ class FirebaseService {
       'name': user.name,
       'surName': user.surname,
       'password': user.password,
+      'status': user.status,
+    });
+  }
+
+  static Future<void> updateStatus(User user, bool status) async {
+    final docRef = _firestore.collection('users').doc(user.id);
+    await docRef.update({
+      'status': status,
     });
   }
 
@@ -23,6 +31,7 @@ class FirebaseService {
         name: data['name'] as String,
         surname: data['surName'] as String,
         password: data['password'] as String,
+        status: data['status'] as bool,
       );
     }
     return null;
@@ -38,21 +47,26 @@ class FirebaseService {
           name: data['name'] as String,
           surname: data['surName'] as String,
           password: data['password'] as String,
+          status: data['status'] as bool,
         );
       }).toList();
       return users;
     });
   }
 
+  static String chatId(String senderId, String receiverId) {
+    List<String> listUser = [senderId, receiverId];
+    listUser.sort();
+    String chatId = listUser.join("_");
+    return chatId;
+  }
+
   static Future<void> saveMessage(Message message) async {
-    final docRef = _firestore
-        .collection('chats')
-        .doc(
-          message.senderId + message.receiverId,
-        )
-        .collection('messages')
-        .doc(message.timestamp.toString());
-    await docRef.set({
+    final chatId = FirebaseService.chatId(message.senderId, message.receiverId);
+    final docRef =
+        _firestore.collection('chats').doc(chatId).collection('messages');
+
+    await docRef.add({
       'receiverId': message.receiverId,
       'content': message.content,
       'timestamp': message.timestamp,
@@ -60,9 +74,10 @@ class FirebaseService {
   }
 
   static Stream<List<Message>> getMessages(String senderId, String receiverId) {
+    final chatId = FirebaseService.chatId(senderId, receiverId);
     final ref = _firestore
         .collection('chats')
-        .doc(senderId + receiverId)
+        .doc(chatId)
         .collection('messages')
         .orderBy('timestamp', descending: true);
     return ref.snapshots().map((snapshot) {
@@ -76,6 +91,31 @@ class FirebaseService {
         );
       }).toList();
       return messages;
+    });
+  }
+
+  static Stream<Message?> getLastMessage(String senderId, String receiverId) {
+    final chatId = FirebaseService.chatId(senderId, receiverId);
+    final ref = _firestore
+        .collection('chats')
+        .doc(chatId)
+        .collection('messages')
+        .orderBy('timestamp', descending: true)
+        .limit(1);
+    return ref.snapshots().map((snapshot) {
+      final message = snapshot.docs
+          .map((doc) {
+            final data = doc.data();
+            return Message(
+              senderId: data['receiverId'] as String,
+              receiverId: senderId,
+              content: data['content'] as String,
+              timestamp: data['timestamp'] as Timestamp,
+            );
+          })
+          .toList()
+          .last;
+      return message;
     });
   }
 }

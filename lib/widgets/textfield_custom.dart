@@ -8,39 +8,43 @@ class TextFieldCustom extends StatelessWidget {
     this.labelText,
     this.prefixIcon,
     this.onFieldSubmitted,
-    required this.obscureText,
+    this.obscureText,
+    this.validator,
   });
 
   final TextEditingController? controller;
   final String? labelText;
   final Widget? prefixIcon;
   final Function(String)? onFieldSubmitted;
-  final bool obscureText;
+  final String? Function(String?)? validator;
+  final bool? obscureText;
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: const TextStyle(color: AppColors.darkGrey),
-        contentPadding: const EdgeInsets.all(10),
-        filled: true,
-        fillColor: AppColors.grey,
-        focusedBorder: _outLineInputBorder(),
-        border: _outLineInputBorder(),
-        prefixIcon: prefixIcon,
-        prefixIconColor: AppColors.darkGrey,
-      ),
-      onFieldSubmitted: onFieldSubmitted,
-      obscureText: obscureText,
-      validator: (value) =>
-          value == null || value.isEmpty ? AppText.textFieldError : null,
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        controller: controller,
+        decoration: _decoration(),
+        onFieldSubmitted: onFieldSubmitted,
+        obscureText: obscureText ?? false,
+        validator: validator);
+  }
+
+  _decoration() {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: const TextStyle(color: AppColors.darkGrey),
+      contentPadding: const EdgeInsets.all(10),
+      filled: true,
+      fillColor: AppColors.grey,
+      focusedBorder: _outLineInputBorder(),
+      border: _outLineInputBorder(),
+      prefixIcon: prefixIcon,
+      prefixIconColor: AppColors.darkGrey,
     );
   }
 
-  OutlineInputBorder _outLineInputBorder() {
+  _outLineInputBorder() {
     return OutlineInputBorder(
       borderRadius: BorderRadius.circular(15),
       borderSide: BorderSide.none,

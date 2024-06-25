@@ -18,6 +18,7 @@ class ChatScreen extends StatelessWidget {
         appBar: AppBar(
           title: UserTile(
             user: receiverUser,
+            status: true,
           ),
           titleSpacing: 0.0,
           leading: _leadingAppBar(context),
