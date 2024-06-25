@@ -1,4 +1,3 @@
-import 'package:chat_app/core/constant/constant.dart';
 import 'package:chat_app/core/core.dart';
 import 'package:chat_app/models/models.dart';
 import 'package:chat_app/services/services.dart';
@@ -13,13 +12,13 @@ class UserTile extends StatelessWidget {
     required this.user,
     this.onTap,
     this.message,
-    required this.status,
+    required this.showStatus,
   });
 
   final User user;
   final Function()? onTap;
   final Message? message;
-  final bool status;
+  final bool showStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +34,7 @@ class UserTile extends StatelessWidget {
         contentPadding: const EdgeInsets.only(right: 12),
         leading: _leading(isCurrentUser),
         title: _title(isCurrentUser),
-        subtitle: //status ? _status(isLoading) :
-        _subtitle(currentUser),
+        subtitle: showStatus ? _status(user.status) : _subtitle(currentUser),
         trailing: _trailing(formattedTime),
         onTap: onTap);
   }

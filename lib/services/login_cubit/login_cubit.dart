@@ -1,4 +1,4 @@
-import 'package:chat_app/models/user.dart';
+import 'package:chat_app/models/models.dart';
 import 'package:chat_app/services/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -33,8 +33,6 @@ class LoginCubit extends Cubit<LoginState> {
   bool isFormValid() => formKey.currentState!.validate();
 
   void login() async {
-
-
     final name = nameController.text.trim();
     final surName = surNameController.text.trim();
     final password = passwordController.text.trim();
@@ -42,7 +40,7 @@ class LoginCubit extends Cubit<LoginState> {
     if (isFormValid()) {
       final user = await FirebaseService.getUser(name + surName + password);
       if (user != null && user.password == password) {
-        await FirebaseService.updateStatus(user, true);
+        logIn();
         emit(
           state.copyWith(user: user),
         );
@@ -55,9 +53,7 @@ class LoginCubit extends Cubit<LoginState> {
             status: false);
 
         await FirebaseService.saveUser(newUser);
-        await FirebaseService.updateStatus(newUser, true);
-
-
+        logIn();
         emit(
           state.copyWith(user: newUser),
         );
@@ -65,11 +61,13 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  // void logOut() async {
-  //   FirebaseService.updateStatus(newUser, true);
-  // }
+  void logIn() async {
+    final user = state.user;
+    await FirebaseService.updateStatus(user, true);
+  }
 
-  void isOnline(User user, bool status) async {
-    await FirebaseService.updateStatus(user, status);
+  void logOut() async {
+    final user = state.user;
+    FirebaseService.updateStatus(user, false);
   }
 }

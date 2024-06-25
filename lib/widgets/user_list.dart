@@ -5,8 +5,38 @@ import 'package:chat_app/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class UserList extends StatelessWidget {
+class UserList extends StatefulWidget {
   const UserList({super.key});
+
+  @override
+  State<UserList> createState() => _UserListState();
+}
+
+class _UserListState extends State<UserList> {
+  late final AppLifecycleListener _listener;
+
+  @override
+  void initState() {
+    super.initState();
+    _listener = AppLifecycleListener(
+      onResume: _logIn,
+      onInactive: _logOut,
+      onHide: _logOut,
+      onPause: _logOut,
+      onRestart: _logOut,
+      onDetach: _logOut,
+    );
+  }
+
+  @override
+  void dispose() {
+    _listener.dispose();
+    super.dispose();
+  }
+
+  void _logOut() => context.read<LoginCubit>().logOut();
+
+  void _logIn() => context.read<LoginCubit>().logIn();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +63,7 @@ class UserList extends StatelessWidget {
                     user: receiverUser,
                     onTap: () => _navigateToChat(context, receiverUser),
                     message: message,
-                    status: false,
+                    showStatus: false,
                   );
                 },
               );

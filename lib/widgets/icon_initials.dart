@@ -1,9 +1,9 @@
 import 'dart:math';
-import 'package:chat_app/core/constant/colors.dart';
+import 'package:chat_app/core/core.dart';
 import 'package:flutter/material.dart';
 
 class IconInitials extends StatelessWidget {
-  IconInitials({
+  const IconInitials({
     super.key,
     required this.name,
     required this.surName,
@@ -11,16 +11,16 @@ class IconInitials extends StatelessWidget {
 
   final String name;
   final String surName;
-  final _randomColor =
-      Colors.primaries[Random().nextInt(Colors.primaries.length)];
 
   @override
   Widget build(BuildContext context) {
+    final randomColor =
+        Colors.primaries[Random().nextInt(Colors.primaries.length)];
     return Container(
       height: 50,
       width: 50,
       decoration: BoxDecoration(
-        color: _randomColor,
+        color: randomColor,
         shape: BoxShape.circle,
       ),
       child: Center(
